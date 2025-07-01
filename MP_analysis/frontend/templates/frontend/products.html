@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товары</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Парсер товаров</h1>
+
+    <!-- парсинг -->
+    <form id="parse-form">
+        <label for="search_query">Поисковый запрос:</label>
+        <input type="text" id="search_query" name="search_query" placeholder="Введите категорию или товар" required />
+        <button type="submit">Запустить парсинг</button>
+    </form>
+    <br>
+    <br>
+
+    <!-- графики -->
+    <table border="0">
+        <thead>
+            <tr>
+                <th width="50%"><h2>Гистограмма цен</h2></th>
+                <th width="50%"><h2>Линейный график: Скидка vs Рейтинг</h2></th>
+            </tr>
+        </thead>
+        <tbody>
+        
+            <tr>
+                <td> <canvas id="priceHistogram"></canvas> </td>
+                <td><canvas id="discountVsRating"></canvas></td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+
+    <h2>Таблица товаров</h2>
+
+    <!-- форма фильтрации -->
+    <form method="get" id="filter-form">
+        <label for="min_price">Мин цена:</label>
+        <input type="number" name="min_price" value="{{ filters.min_price }}" />
+
+        <label for="max_price">Макс цена:</label>
+        <input type="number" name="max_price" value="{{ filters.max_price }}" />
+
+        <label for="min_rating">Мин рейтинг:</label>
+        <input type="number" step="0.1" name="min_rating" value="{{ filters.min_rating }}" />
+
+        <label for="min_reviews">Мин отзывы:</label>
+        <input type="number" name="min_reviews" value="{{ filters.min_reviews }}" />
+
+        <button type="submit">Применить фильтры</button>
+    </form>
+
+    <!-- товары -->
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Цена со скидкой</th>
+                <th>Рейтинг</th>
+                <th>Отзывы</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.discounted_price }}</td>
+                <td>{{ product.rating }}</td>
+                <td>{{ product.reviews_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="charts-data" style="display: none;">{{ charts_data|safe }}</div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
+    <script src="{% static 'js/charts.js' %}"></script>
+    <script src="{% static 'js/parsing.js' %}"></script>
+</body>
+</html>
